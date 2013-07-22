@@ -1,0 +1,8 @@
+Package: nntpswitch
+Version: #VERSION#
+Section: base
+Priority: optional
+Architecture: #ARCH#
+Maintainer: Tommy van Leeuwen <tommy@chiparus.org>
+Description: NNTPSwitch - Linux NNTP Content Router
+ First version of NNTPSwitch.

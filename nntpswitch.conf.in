@@ -1,0 +1,171 @@
+#
+# NNTPSwitch Sample Configuration
+# $Id: nntpswitch.conf.in,v 1.51 2010-11-11 12:39:16 tommy Exp $
+#
+# See http://wiki.chiparus.net/index.php/NNTPSwitch:nntpswitch.conf
+# For complete documentation on this file.
+#
+
+# System options not runtime changeable
+string ListenPorts 119
+string BindAddress 0.0.0.0
+string RunAsUser news
+string PidFile /var/run/nntpswitchd.pid
+
+# If you use RRD or other profile bandwidth monitoring you'd better
+# leave this on. This will ensure the counters won't rollover on 
+# nntpswitch restarts.
+# Write profile stats to this file every minute
+string StatsFile /tmp/.nntpswitch.stats
+# write each 60 seconds (Set to 0 to disable stats writing)
+int StatsFilePeriod 60
+
+# connection dumps
+string ConnDumpFile /tmp/connection.dump
+
+# Every file or dirname not starting with a / has BasePath prepended
+string BasePath /etc/nntpswitch
+
+# Paths and Files 
+# kill -1 will reload these
+string AccessFile access.conf
+string ServerFile servers.conf
+
+string OverviewFmtFile overview.fmt
+string ActiveFile active
+string NewsgroupsFile newsgroups
+
+# Timeout for server reading
+int ServerReadTimeout 300
+
+# Timeout for connecting
+int ServerConnectTimeout 4
+
+# Timeout for client command input
+int ClientReadTimeout 300
+
+# Global max connections allowed. If you need to go over 8192 edit nntpd.h and change MAX_PROC
+int MaxConnections 500
+
+# Log everything send to the client
+# responses to the client (should be a lot the same as logReadserver)
+int LogWriteclient 0
+
+# Log everything read from a backend server
+# server command responses generally
+int LogReadserver 0
+
+# Log everything send to a backend server
+# log commands send by nntpswitch
+int LogWriteserver 0
+
+# Log all commands separately instead of summaries
+int LogCommands 0
+
+# Log missing articles
+int LogMissing 0
+
+# Log all authentication information ("authinfo login")
+int LogAuthInfo 1
+
+# All outgoing posts to this machine. NNTPSwitch adds all headers and expects
+# a server responding to the IHAVE command. It should do the spamfiltering
+# and feeding to other systems.
+string PostServer posthost.example.com
+int PostServerPort 119
+
+# Enable X-Trace: Header in posts (1) or use it only for logging (0).
+int PostXTraceHeader 1
+
+# Should normally be moderators.isc.org
+string ModeratorDomain moderators.isc.org
+
+# Where your MTA resides
+string MailerPath /usr/sbin/sendmail -oi -t
+
+# Buffersize for article transport.
+int BufSize 8192
+
+# Socket Buffersize, leave 0 for autotuning by your OS
+int SockBufSize 0
+
+# How many connections to delay before we're able to spawn a client process
+# Put it too high and it will get slow, put it too low and clients start
+# too see connection refused's. 128 should be ok in most situations.
+int ListenBackLog 128
+
+# Deny XPAT/XHDR commands for fields not in overview.fmt
+# INN indexes only what is in overview.fmt. If you disable this option
+# inn will perform a search through its overview information. For large
+# groups and non indexed headers simple lookups can take minutes eating
+# up system resources.! It's best to leave this check on.
+int DenyNoIndexField 1
+
+# After a server down after this many seconds, how many seconds to backoff.
+int DownDelay 4
+
+# This is the delay for backing off clients after they reach their connection
+# limit. This will force clients to correctly configure their limits. Unless
+# the server is full ofcourse where the news reseller should upgrade their
+# number of users etc.
+int RetryDelay 2
+
+# Sleep this many seconds after sending accounting when max bytes is reached.
+int AccountingDelay 3
+
+# Recalibrate the rate limiter 5 times a sec. Anything else will make
+# it slightly inaccurate. 
+int RatePeriod 5
+
+# Do reverse dns lookups
+int DNSLookups 1
+
+# Drop unknown clients after X invalid commands. Mostly mail and webservers.
+int DropUnknown 10
+
+# Touch this file to temporarily disable the server
+string DisableFile closed
+string DisableText 500 Sorry, we're closed.
+
+# Sometimes diablo reports 'no such article' while the article is there.
+# This option specifies how many retries we should do before returning
+# no such article to the client.
+int NoSuchArticleRetries 5
+
+# Tell nntpswitch you have a local dreader listening
+# on some other port on the localhost. This server
+# should be listed first with no groups (!*)
+# This option skips header permission checks to save
+# bandwidth between dreaders and spool servers.
+int LocalDreader 0
+
+# Bind each nntpswitch process to a separate cpu core.
+# For each new connection a cpu core is choosen from the pool.
+# Normally you don't need this option.
+int CoreBind 0
+
+# NSE only configuration from here
+
+# SSL Stuff
+int EnableSSL 0
+string ListenSSLPorts 563
+#string SSLKeyfile /etc/nntpswitch/ssl.key
+#string SSLPassword password
+#string SSLCAList /etc/nntpswitch/tes
+
+string AsLoginURL http://10.0.22.101:81/nntpswitch/as_login.pl?user=%s&host=%s&mh=%d&mc=%d&pid=%d&profile=%s
+string AsLogoutURL http://10.0.22.101:81/nntpswitch/as_logout.pl?user=%s&host=%s&pid=%d
+
+# Set to 1 to use as many remote configuration as possible.
+# Setting to 1 will also enable WildmatURL
+int RemoteConfig 0
+string WildmatURL http://10.0.22.101:81/auth/wildmat.pl?m=all
+
+# AuthServer ACL's
+int JSONACL 0
+string ACLURL http://localhost:82/auth/acl.pl?ip=%s
+
+# AuthServer Ratelimits
+int JSONRL 0
+string RLURL http://localhost:82/auth/rlstore.pl
+

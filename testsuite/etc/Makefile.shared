@@ -1,0 +1,74 @@
+## $Id: Makefile.shared,v 1.1 2006-09-25 15:44:55 mjo Exp $
+## Note: . is the subdir from the actual test; e.g.:
+## . = ~/src/nse/nntpswitch/spamfilter/testsuite/startup
+## SHMF = ../etc/Makefile.shared
+
+SHELL = /bin/bash
+
+ifndef CONFDIR
+export CONFDIR := $(abspath $(dir $(SHMF)))/
+endif
+
+ifndef PORT
+export PORT := 9119 ## ~~ grep ListenPort ${CONFDIR}/nntpswitch.conf
+endif
+
+ifndef BASE
+BASE := $(abspath $(dir $(SHMF))../..)/
+endif
+
+ifndef NNTPSWITCHD
+export NNTPSWITCHD := $(BASE)nntpswitchd
+endif
+
+ifndef UPDATEGROUPS
+export UPDATEGROUPS := $(BASE)updategroups
+endif
+
+CONFFILES += nntpswitch.conf access.conf servers.conf overview.fmt
+CONFFILES += active newsgroups
+CONFFILES := $(wildcard $(addprefix $(CONFDIR),$(CONFFILES)))
+
+.PHONY: all clean test test+ test-clean test++ test-distclean
+all: test
+test:
+clean:
+distclean: clean
+test+: clean test
+test-clean: clean
+test++: distclean test
+test-distclean: distclean
+
+ifdef TEST_RUN
+PATH := $(BASE)bin:$(PATH)
+TESTNAME := $(subst $(BASE),,$(abspath .))
+
+test: test-output
+
+test-output: $(TEST_RUN) $(NNTPSWITCHD) $(CONFFILES) test-output-ug
+	-@echo start=${TESTNAME} \
+	; cat test-output-ug > $@ 2>&1 \
+	; ./$< 2>&1 | tee -a $@ >&2 \
+	; echo stop=${TESTNAME} result=$${PIPESTATUS[0]}
+
+test-output-ug $(CONFDIR)newsgroups $(CONFDIR)active: $(CONFDIR)servers.conf
+	@{ cd ${CONFDIR}; ${UPDATEGROUPS} -c ${CONFDIR}nntpswitch.conf; } \
+			2>&1 | tee test-output-ug >&2
+
+clean: ; @rm -f test-output $(CONFDIR)nntpswitchd.pid
+distclean: ; @rm -f $(CONFDIR)newsgroups $(CONFDIR)active test-output-ug
+endif
+
+ifneq ($(TESTS),)
+define TEST_template
+.PHONY: test-$(1) test-clean-$(1)
+test: test-$(1)
+test-$(1): ; +@$$(MAKE) -s -C $(1) test --no-print-directory
+clean: clean-$(1)
+clean-$(1): ; +@$$(MAKE) -s -C $(1) clean --no-print-directory
+distclean: distclean-$(1)
+distclean-$(1): ; +@$$(MAKE) -s -C $(1) distclean --no-print-directory
+endef
+
+$(foreach test,$(TESTS),$(eval $(call TEST_template,$(test))))
+endif

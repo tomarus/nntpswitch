@@ -1,0 +1,2 @@
+#!/bin/sh
+update-rc.d nntpswitch defaults 90 >/dev/null 2>&1

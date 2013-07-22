@@ -1,0 +1,94 @@
+0.12  ??-??-????
+    - Add SSL support from daxx.ru, available in commercial version
+    - Add tunable parameters to ratelimits
+    - Add SingleHostUser profile option
+    - Add Slave profile option to make nntpswitch really transparant
+    - Add statistics options: nrforks and nrforkspersec
+    - Add retries to article not found errors (cfg.NoSuchArticleRetries)
+    - Add ServerConnectTimeout config option
+    - Add MaxConnections to server config
+    - Add testsuite - Mike Jonkmans
+    - Add listening to multiple ports - Mike Jonkmans
+    - Add port configuration for radius auth modules
+    - Add more checks to posted headers
+    - Add separate timer process for periodic writes of statistics
+    - Split cfg.BufSize and cfg.SockBufSize 
+    - Fix logging - Mike Jonkmans
+    - Fix Makefile - Mike Jonkmans
+    - Fix reloading, put stuff in masterloop out of the signal
+    - Fix segv looping combined with connections counters
+    - Fix and partly rewrote the balancer/backup mechanism
+    - Fix updategroups using balancer, groups can be updated while server down now
+    - Fix servers.conf reloading (500 Cant Select Server errors)
+    - Fix reversed timeout/retry radius parameters - Mike Jonkmans
+    - Fix forking/counter checking speedups on limited profiles
+    - Fix acct_radius port nr lookup
+    - Fix profiles can be disabled now
+    - Fix posts are now handled over 2nd connection
+    - Remove 'levels' from server config file
+    - Remove sbuf from client struct - Mike Jonkmans
+    - Remove modules, now integrated with main core
+    - Move acct config from auth entries to profile (keyword Accounting)
+
+0.11  30-11-2004
+    - Add basic LDAP authentication module
+    - Add "users" which are part of a profile and have multiple connections
+    - Add rate-limit support on user and/or profile basis
+    - Add retrieve article by message-id without joining group first
+    - Add RRD Statistics options (which rrdbrowse supports)
+    - Add "Include" into access.conf
+    - Add support for authentication on backend servers
+    - Add touch some file and the server will be disabled (DisableFile/DisableText)
+    - Add optional profile based footer.txt to postings
+    - Change merge profiles.conf and auth.conf entries to access.conf
+    - Change NNTP-Posting-Host header to display raw IP address too
+    - Change reverse dns lookups to after fork(). New config option DNSLookups
+    - Change bytecounters and accounting to 64 bit ints
+    - Change MessageIdDomain and PathHeader to Hostname
+    - Fix allow for MaxSessionBytes to be 0 (unlimited)
+    - Fix radacct default port lookup
+    - Misc Cleanups
+    - Misc Bugfixes
+
+0.10  18-03-2004
+    - Add Radius Accounting
+    - Add Radius Authorization (Thanks ADS of Voicenet)
+    - Add MySQL Authorization
+    - Add Postgres Authorization
+    - Add configuration for syslog accounting
+    - Add top poster stats
+    - Add NoControl profile option
+    - Add NNTP-Posting-Date too
+    - Add Disconnecting HTTP proxies immediately 
+    - Add MaxSessionBytes profile option
+    - Add backup and balancing server policies
+    - Add new server and groups configuration (servers.conf)
+    - Add new updategroups utility
+    - Add authentication and accounting configuration (auth.conf)
+    - Add user profiles support (profiles.conf)
+    - Add null accounting, pop3 authorization, dummy authorization
+    - Change always pass group cmd to backend server
+    - Change don't close server connection on nonexistent group change
+    - Fix string parse write failure in server response line of passcmd()
+
+0.09  24-12-2003
+    - Add DenyNoIndexField option
+    - Add option -t to test config and exit
+    - Add group based authentication
+    - Add more stats and a nice index.html
+    - Change 499 server unavailable to 403
+    - Make OVER the same as XOVER
+    - Add maxSessionTime limit
+    - Fix and cleanup error handling at startup and exit
+    - Handle config file specified at commandline (option -c)
+    - Fix duplicate readserver accounting
+
+0.08  04-09-2003
+    - Bugfix beta release over 0.07 
+
+0.07  28-02-2003
+    - First beta testing release
+
+0.06  04-01-2003
+    - First public alpha release
+

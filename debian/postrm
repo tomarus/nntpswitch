@@ -1,0 +1,2 @@
+#!/bin/sh
+update-rc.d -f nntpswitch remove >/dev/null 2>&1

@@ -1,0 +1,42 @@
+#!/bin/bash
+
+echo >&2 $0 $*
+
+[ -n "$PREFIX" ] && {
+	NNTPSWITCHD=$PREFIX/sbin/nntpswitchd
+	CONFDIR=$PREFIX/etc/nntpswitch
+}
+: ${NNTPSWITCHD?} ${CONFDIR?}
+
+conf2port () {
+	[ -r "$1" ] || { echo >&2 file ["$1"] is not readable; exit 1; }
+	sed -ne 's/ListenPorts \([0-9][0-9]*\).*/\1/p' "$1"
+}
+
+nntpswitchd_start () {
+	$0 stop
+	cd "${CONFDIR}" && ${NNTPSWITCHD} -c ${CONFDIR}/nntpswitch.conf
+}
+
+nntpswitchd_stop ()
+{
+	PORT=${PORT:-`conf2port ${CONFDIR}/nntpswitch.conf`}
+	: ${PORT:?}
+	PID="$(fuser -n tcp 4 ${PORT} 2>/dev/null || :)"
+	PID=$(echo $PID)
+	[ -z "$PID" ] && { echo >&2 no process on tcp port $PORT; return 0; }
+	echo >&2 sending TERM to -$PID
+	kill -TERM -$PID 2>/dev/null || return 0
+	sleep 1
+	echo >&2 sending KILL to -$PID
+	kill -KILL -$PID 2>/dev/null || return 0
+}
+
+case "$1" in
+restart|start) nntpswitchd_start ;;
+stop) nntpswitchd_stop ;;
+"") echo >&2 "$0: start, restart or stop?"; exit 1 ;;
+*) echo >&2 "$0: '$1' unsupported"; exit 1 ;;
+esac
+
+exit 0

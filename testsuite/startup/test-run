@@ -1,0 +1,4 @@
+#!/bin/bash -e
+
+trap 'nntpswitchd-control stop' 0
+nntpswitchd-control restart

@@ -1,0 +1,70 @@
+NNTPSwitch 0.12
+
+Enjoy the NNTPSwitch Wiki at http://wiki.chiparus.net/index.php/NNTPSwitch
+where i try to keep the latest documentation updated.
+
+Upgrading notes (See below for installation instructions)
+
+Your old config is likely to be incompatible due to the new accounting 
+configuration. Mainly the configuration went from the acl/auth entries 
+to the profile. 
+
+In access.conf first add the Accounting keyword to your default profile, 
+pointing to your default accounting module. Also update your other profiles.
+
+Next, remove the authentication and accounting names from the auth and acl 
+config, mostly at the bottom of the access.conf 
+
+If you have something like this:
+	auth * authname acctname profile
+	acl 0/0 acctname profile
+
+Change it to:
+	auth * authname profile
+	acl 0/0 profile
+
+And put this in your profiles:
+	Accounting acctname
+
+Also, the levels have been removed from the servers.conf. To upgrade, just 
+delete the level keywords from your servers.conf. Or leave them, the config
+reader will ignore them.
+
+
+Installation
+
+For full pleasure run nntpswitch on linux. FreeBSD is reported to work, but also
+reported to be buggy in some configurations. Solaris should also work if you
+leave out some features. Try it and you know it.
+
+You should have Perl installed in your $PATH. 
+
+Install the following development packages. If you have debian use:
+apt-get -u install libmcrypt-dev libldap2-dev libmysqlclient15-dev postgresql-dev
+
+  make
+  make install
+
+"make" calls "make config" automatically. make config parses the 
+nntpswitch.conf.in file and uses the values as defaults. 
+
+  mkdir /etc/nntpswitch
+  cp nntpswitch.conf-dist /etc/nntpswitch/nntpswitch.conf
+  cp etc/overview.fmt /etc/nntpswitch/
+  cp etc/servers.conf /etc/nntpswithc
+  cp etc/access.conf /etc/nntpswitch/
+
+Optionally copy etc/init.d to /etc/init.d/nntpswitch.
+
+Edit all configs to match your configuration.
+
+You can test your config using the command:
+
+  nntpswitchd -t
+
+If it works and it is your first try of running nntpswitch you should generate
+an nntpswitch compatible active file. You can do so with the command:
+
+  updategroups
+
+Finally run nntpswitchd without options to start it.

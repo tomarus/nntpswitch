@@ -1,0 +1,11 @@
+#!/bin/bash -e
+
+echo Not yet implemented
+exit 0
+
+#trap 'nntpswitchd-control stop' 0
+nntpswitchd-control stop
+#cd ${NNTPSWITCHD%/*}
+cd ../etc
+#gdb -d ${NNTPSWITCHD%/*} ${NNTPSWITCHD##*/}
+${NNTPSWITCHD} -s

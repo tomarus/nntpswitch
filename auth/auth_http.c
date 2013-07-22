@@ -2,12 +2,12 @@
  * $Id: auth_http.c,v 1.4 2009-12-01 15:09:33 tommy Exp $
  * (c) 2009 News-Service Europe bv
  *
- * NNTPSwitch Auth for HTTP iov dreamload
+ * NNTPSwitch Auth for HTTP
  *
- * http://www.dreamload.de/services/userstatus.aspx?user=xx&password=yy
+ * http://host/filhost/file?user=xx&password=yy
  * Return:
  * authtrue/false:posttruefalse:bytesleft:profile
- * al het andere wat returned wordt is auth rejected
+ * everything else is auth rejected.
  *
  * uses libcurl (apt-get libcurl3-openssl-dev)
  */

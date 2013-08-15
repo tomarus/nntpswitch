@@ -126,7 +126,7 @@ static int send_email(CLIENT *client, HLIST *phlist, char *msgid, char *postbuf,
 	sprintf(sysbuf, "%s %s < %s", cfg.MailerPath, address, tmp);
 
 	int r = WEXITSTATUS(system(sysbuf));
-	if (r);
+	if (r)
 	{
 		syslog(LOG_WARNING, "Can't send email to moderator, sendmail exit status: %d", r);
 		unlink(tmp);

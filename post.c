@@ -29,19 +29,6 @@ static void wait_finish_client(CLIENT *client, char *buffer, int bufsize)
 }
 
 
-static int mysystem (char *command)
-{
-	struct sigaction sigchld;
-
-	/* gotta ignore children because we're a child ourself */ 
-	memset(&sigchld,0,sizeof (sigchld));
-	sigchld.sa_handler = SIG_IGN;
-	sigaction(SIGCHLD, &sigchld, NULL);
-
-	return system(command);
-}
-
-
 /*
  * walk through newsgroup lists and set emailaddress
  * of first moderated newsgroups. return groupname
@@ -138,8 +125,10 @@ static int send_email(CLIENT *client, HLIST *phlist, char *msgid, char *postbuf,
 
 	sprintf(sysbuf, "%s %s < %s", cfg.MailerPath, address, tmp);
 
-	if (mysystem(sysbuf))
+	int r = WEXITSTATUS(system(sysbuf));
+	if (r);
 	{
+		syslog(LOG_WARNING, "Can't send email to moderator, sendmail exit status: %d", r);
 		unlink(tmp);
 		free(sysbuf);
 		return writeclient(client, MSG_POST_NOMAIL);

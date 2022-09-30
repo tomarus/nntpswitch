@@ -7,6 +7,8 @@ This is the last available production version when www.news-service.com was shut
 
 See documentation at: http://redmine.chiparus.net/projects/nntpswitch/wiki
 
+or better at: https://web.archive.org/web/20161023152950/http://redmine.chiparus.net/projects/nntpswitch/wiki
+
 ----------------
 
 # wheezy
